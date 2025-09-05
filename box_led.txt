@@ -1,0 +1,108 @@
+module nesss(
+	input wire clk, re,
+	output reg[6:0] led0,led1,led2,led3,
+	output reg ledfull
+	);
+reg [3:0] i0; //dieukhienled0
+reg [3:0] i1; //dieukhienled1
+reg [3:0] i2; //dieukhienled2
+reg [3:0] i3; //dieukhienled3	
+
+
+	
+always @(posedge clk or negedge re) begin
+			
+			if(~re) begin
+			i3<='b0000;
+			i2<='b0000;
+			i1<='b0000;
+			i0<='b0000;
+			ledfull<=0;
+			end 
+			else begin
+				
+			if(clk) begin
+			ledfull <=0;
+			i0<=i0+1;
+			if(i0==4'b1001) begin
+			i1<=i1+1;
+			i0<=4'b0000;
+			end
+			if(i1==4'b0001) begin
+			i2<=i2+1;
+			i1<=4'b0000;
+			end
+			// set cho khi thành 10 về 0 thì đèn 1 về 0 theo
+			if(i0==4'b0001) begin
+			i1<=4'b0000;
+			//i2<=i2+1;
+			end
+			//===================
+			if(i2==4'b1001 & i1==4'b0001 & i0==4'b0000) begin
+			i3<=i3+1;
+			i1<=4'b0000;
+			i2<=4'b0000;
+			i0<=4'b0000;
+			end
+			//khi đạt 10 thùng cho nhấn nữa
+			if(i3=='b0001) begin
+			i1<=4'b0000;
+			i2<=4'b0000;
+			i0<=4'b0000;
+			ledfull <=1;
+			end
+			//=====================
+			// điều khiển led sáng
+			if( i3=='b0001&i2=='b0000 & i1=='b0000 & i0==4'b0000) begin
+			ledfull <=1;
+			end
+			//====================
+		end
+		end
+		end
+always @(clk) begin // led0
+		case(i0)
+			4'b0000: led0 = 7'b1000000; // Hiển thị số 0
+			4'b0001: led0 = 7'b1111001; // Hiển thị số 1
+			4'b0010: led0 = 7'b0100100; // Hiển thị số 2
+			4'b0011: led0 = 7'b0110000; // Hiển thị số 3
+			4'b0100: led0 = 7'b0011001; // Hiển thị số 4
+			4'b0101: led0 = 7'b0010010; // Hiển thị số 5
+			4'b0110: led0 = 7'b0000010; // Hiển thị số 6
+			4'b0111: led0 = 7'b1111000; // Hiển thị số 7
+			4'b1000: led0 = 7'b0000000; // Hiển thị số 8
+			4'b1001: led0 = 7'b0010000; // Hiển thị số 9
+			//default: led0 = 7'b1000000; // Hiển thị số 0
+		endcase
+end
+always @(clk) begin // led1
+		case(i1)
+			4'b0000: led1 = 7'b1000000; // Hiển thị số 0
+			4'b0001: led1 = 7'b1111001; // Hiển thị số 1
+			//default: led1 = 7'b1000000; // Hiển thị số 0
+		endcase
+end	
+always @(clk) begin // led2
+		case(i2)
+			4'b0000: led2 = 7'b1000000; // Hiển thị số 0
+			4'b0001: led2 = 7'b1111001; // Hiển thị số 1
+			4'b0010: led2 = 7'b0100100; // Hiển thị số 2
+			4'b0011: led2 = 7'b0110000; // Hiển thị số 3
+			4'b0100: led2 = 7'b0011001; // Hiển thị số 4
+			4'b0101: led2 = 7'b0010010; // Hiển thị số 5
+			4'b0110: led2 = 7'b0000010; // Hiển thị số 6
+			4'b0111: led2 = 7'b1111000; // Hiển thị số 7
+			4'b1000: led2 = 7'b0000000; // Hiển thị số 8
+			4'b1001: led2 = 7'b0010000; // Hiển thị số 9
+			//default: led2 = 7'b1000000; // Hiển thị số 0
+		endcase
+end	
+
+always @(clk) begin // led3
+		case(i3)
+			4'b0000: led3 = 7'b1000000; // Hiển thị số 0
+			4'b0001: led3 = 7'b1111001; // Hiển thị số 1
+			//default: led3 = 7'b1000000; // Hiển thị số 0
+		endcase
+end	
+endmodule
